@@ -15,5 +15,5 @@ public interface BoardService {
      * Checks whether the user has access to this board.
      * @throws UserDoesNotOwnEntityException if the board belongs to another user
      */
-    void boardBelongToUser(long userId, long boardId);
+    void boardBelongToUser(long boardId, long userId);
 }

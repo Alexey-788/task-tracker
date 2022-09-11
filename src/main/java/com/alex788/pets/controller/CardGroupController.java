@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(description = "Card group resources that provides access to available card group data", name = "Card group Resource")
 @AllArgsConstructor
@@ -32,6 +32,13 @@ public class CardGroupController {
     })
     @GetMapping(value = "/boards/{boardId}/groups", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CardGroupDto>> getBoardCardGroups(@PathVariable long boardId, @RequestHeader long userId) {
-        throw new NotImplementedException();
+        boardService.boardBelongToUser(boardId, userId);
+
+        List<CardGroupDto> cardGroups = cardGroupService.getAllByBoardId(boardId)
+                .stream()
+                .map(CardGroupDto::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(cardGroups);
     }
 }

@@ -1,9 +1,9 @@
 package com.alex788.pets.service;
 
 import com.alex788.pets.entity.UserEntity;
+import com.alex788.pets.exception.NotFoundException;
 import com.alex788.pets.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -14,6 +14,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity getById(long id) {
-        throw new NotImplementedException();
+        System.out.println("test with id " + id);
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("No user found for id " + id)
+        );
     }
 }

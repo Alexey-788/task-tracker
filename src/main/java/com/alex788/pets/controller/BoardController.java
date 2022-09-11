@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(description = "Board resources that provides access to available board data", name = "Board Resource")
 @AllArgsConstructor
@@ -32,6 +32,11 @@ public class BoardController {
     })
     @GetMapping(value = "/users/{userId}/boards", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BoardDto>> getUserBoards(@PathVariable long userId) {
-        throw new NotImplementedException();
+        List<BoardDto> userBoards = boardService.getAllByUserId(userId)
+                .stream()
+                .map(BoardDto::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(userBoards);
     }
 }

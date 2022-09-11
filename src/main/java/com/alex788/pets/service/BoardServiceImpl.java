@@ -1,9 +1,11 @@
 package com.alex788.pets.service;
 
 import com.alex788.pets.entity.BoardEntity;
+import com.alex788.pets.entity.UserEntity;
+import com.alex788.pets.exception.NotFoundException;
+import com.alex788.pets.exception.UserDoesNotOwnEntityException;
 import com.alex788.pets.repository.BoardRepository;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,16 +19,22 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardEntity getById(long id) {
-        throw new NotImplementedException();
+        return boardRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("No board found for id " + id)
+        );
     }
 
     @Override
     public List<BoardEntity> getAllByUserId(long userId) {
-        throw new NotImplementedException();
+        UserEntity user = userService.getById(userId);
+        return user.getBoards();
     }
 
     @Override
-    public void boardBelongToUser(long userId, long boardId) {
-        throw new NotImplementedException();
+    public void boardBelongToUser(long boardId, long userId) {
+        BoardEntity board = getById(boardId);
+        if (board.getUser().getId() != userId) {
+            throw new UserDoesNotOwnEntityException("User with id " + userId + " doesn't own board with id " + boardId);
+        }
     }
 }

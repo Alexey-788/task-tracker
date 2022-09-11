@@ -5,9 +5,9 @@ import com.alex788.pets.entity.CardGroupEntity;
 import com.alex788.pets.exception.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ class CardGroupServiceImplTest {
     @Autowired
     CardGroupService cardGroupService;
 
-    @Mock
+    @MockBean
     BoardService boardService;
 
     @Test
@@ -52,6 +52,6 @@ class CardGroupServiceImplTest {
 
         when(boardService.getById(boardId)).thenThrow(NotFoundException.class);
 
-        Assertions.assertThrows(NotFoundException.class, () -> boardService.getAllByUserId(boardId));
+        Assertions.assertThrows(NotFoundException.class, () -> cardGroupService.getAllByBoardId(boardId));
     }
 }

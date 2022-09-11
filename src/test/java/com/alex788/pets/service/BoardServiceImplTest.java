@@ -7,14 +7,15 @@ import com.alex788.pets.exception.UserDoesNotOwnEntityException;
 import com.alex788.pets.repository.BoardRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class BoardServiceImplTest {
@@ -22,10 +23,10 @@ class BoardServiceImplTest {
     @Autowired
     BoardService boardService;
 
-    @Mock
+    @MockBean
     BoardRepository boardRepository;
 
-    @Mock
+    @MockBean
     UserService userService;
 
     @Test
@@ -89,9 +90,11 @@ class BoardServiceImplTest {
 
         UserEntity user = new UserEntity(userId, null, null, null, null);
         BoardEntity board = new BoardEntity(boardId, user, null, null, false, null);
-        when(boardService.getById(boardId)).thenReturn(board);
 
-        Assertions.assertDoesNotThrow(() -> boardService.boardBelongToUser(userId, boardId));
+        BoardService spy = spy(boardService);
+        doReturn(board).when(spy).getById(boardId);
+
+        Assertions.assertDoesNotThrow(() -> spy.boardBelongToUser(boardId, userId));
     }
 
     @Test
@@ -99,9 +102,10 @@ class BoardServiceImplTest {
         final long userId = 10;
         final long boardId = 20;
 
-        when(boardService.getById(boardId)).thenThrow(NotFoundException.class);
+        BoardService spy = spy(boardService);
+        doThrow(NotFoundException.class).when(spy).getById(boardId);
 
-        Assertions.assertThrows(NotFoundException.class, () -> boardService.boardBelongToUser(userId, boardId));
+        Assertions.assertThrows(NotFoundException.class, () -> spy.boardBelongToUser(boardId, userId));
     }
 
     @Test
@@ -113,8 +117,10 @@ class BoardServiceImplTest {
 
         UserEntity realBoardOwner = new UserEntity(realBoardOwnerId, null, null, null, null);
         BoardEntity board = new BoardEntity(boardId, realBoardOwner, null, null, false, null);
-        when(boardService.getById(boardId)).thenReturn(board);
 
-        Assertions.assertThrows(UserDoesNotOwnEntityException.class, () -> boardService.boardBelongToUser(userId, boardId));
+        BoardService spy = Mockito.spy(boardService);
+        doReturn(board).when(spy).getById(boardId);
+
+        Assertions.assertThrows(UserDoesNotOwnEntityException.class, () -> spy.boardBelongToUser(boardId, userId));
     }
 }
