@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/task_manager
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+
+  liquibase:
+    enabled: true
+    change-log: db/changelog/changelog-master.xml

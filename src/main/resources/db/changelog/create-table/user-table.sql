@@ -1,0 +1,8 @@
+CREATE TABLE usr(
+    id BIGINT PRIMARY KEY NOT NULL,
+    login VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+CREATE SEQUENCE user_id_seq;
